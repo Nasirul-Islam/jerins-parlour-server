@@ -1,7 +1,8 @@
 const express = require('express')
-const { MongoClient } = require('mongodb');
 const cors = require('cors')
 require('dotenv').config()
+const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId
 
 const app = express()
 const port = 5000
@@ -30,6 +31,13 @@ async function run() {
         // get api for services
         app.get("/services", async (req, res) => {
             const result = await servicesCollection.find({}).toArray();
+            res.json(result);
+        });
+        // delete api for services
+        app.delete("/services/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await servicesCollection.deleteOne(query);
             res.json(result);
         });
         // post api for review
