@@ -19,7 +19,7 @@ async function run() {
         await client.connect();
         const database = client.db("jerinsparlour");
         const servicesCollection = database.collection("services");
-        const reviewCollection = database.collection("review");
+        const reviewCollection = database.collection("reviews");
 
         // post api for services
         app.post("/services", async (req, res) => {
@@ -33,17 +33,18 @@ async function run() {
             res.json(result);
         });
         // post api for review
-        app.post("/review", async (req, res) => {
+        app.post("/reviews", async (req, res) => {
             const review = req.body;
-            console.log(service);
+            console.log(review);
             const result = await reviewCollection.insertOne(review);
             res.json(result);
         });
         // get api for review
-        app.get("/review", async (req, res) => {
+        app.get("/reviews", async (req, res) => {
             const result = await reviewCollection.find({}).toArray();
             res.json(result);
-        })
+        });
+        //
     }
     finally {
         // await client.close();
