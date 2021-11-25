@@ -21,6 +21,7 @@ async function run() {
         const database = client.db("jerinsparlour");
         const servicesCollection = database.collection("services");
         const reviewCollection = database.collection("reviews");
+        const ordersCollection = database.collection("orders");
 
         // post api for services
         app.post("/services", async (req, res) => {
@@ -43,7 +44,6 @@ async function run() {
         // post api for review
         app.post("/reviews", async (req, res) => {
             const review = req.body;
-            console.log(review);
             const result = await reviewCollection.insertOne(review);
             res.json(result);
         });
@@ -52,7 +52,43 @@ async function run() {
             const result = await reviewCollection.find({}).toArray();
             res.json(result);
         });
-        //
+        //post api for orders
+        app.post("/orders", async (req, res) => {
+            const order = req.body;
+            const result = await ordersCollection.insertOne(order);
+            res.json(result);
+        });
+        // get api for orders
+        app.get("/orders", async (req, res) => {
+            const result = await ordersCollection.find({}).toArray();
+            res.json(result);
+        });
+        // get api for single order
+        app.get("/userOrders", async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const result = await ordersCollection.find(query).toArray();
+            res.json(result);
+        });
+        //delete api for orders
+        app.delete("/orders/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await ordersCollection.deleteOne(query);
+            res.json(result);
+        })
+        // put/update api for orders
+        app.put("/orders/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    status: "approved"
+                },
+            };
+            const result = await ordersCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        });
     }
     finally {
         // await client.close();
