@@ -135,8 +135,6 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-
 // open api
 app.get('/', (req, res) => {
     res.send('Hello jerin parlore')
